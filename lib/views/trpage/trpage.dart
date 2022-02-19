@@ -107,8 +107,17 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 Widget customListTile(Article articles) {
-  void _launchURL() async {
-    if (!await launch(articles.url)) throw 'Could not launch $articles.url';
+  Future openBrowserURL({
+    required String url,
+    bool inApp = false,
+  }) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceWebView: inApp,
+        enableJavaScript: true,
+      );
+    }
   }
 
   return Container(
@@ -124,7 +133,7 @@ Widget customListTile(Article articles) {
       children: [
         GestureDetector(
           onTap: () {
-            _launchURL();
+            openBrowserURL(url: articles.url, inApp: true);
           },
           child: Container(
             height: 250,
